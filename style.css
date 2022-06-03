@@ -132,3 +132,35 @@ h3 {
 .panel ul h4 {
   margin: 3em 0;
 }
+.city {
+  display: block;
+  cursor: pointer;
+}
+.city:hover {
+  color: #fff;
+}
+.details li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* media responsive */
+@media screen and (max-width: 800px) {
+  .panel,
+  .container {
+    position: relative;
+    width: 100%;
+    top: initial;
+  }
+}
+@media screen and (max-width: 500px) {
+  html {
+    font-size: 9px;
+  }
+}
+@media screen and (max-width: 300px) {
+  .weather-app {
+    min-height: 40em;
+    max-width: 40em;
+  }
+}
