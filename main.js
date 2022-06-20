@@ -62,22 +62,104 @@ function dayOfTheWeek(day, month, year) {
 //function to fetche and display data from api
 function fetchWeatherData() {
   /* fetch data and dynamically add the city name with */
-  fetch("http://api.weatherapi.com.com/v1/current.json?key=......=${cityInput");
-  /* convert the data in json format to regular js object */
-  .then(response => response.json())
-  .then(data =>{
-   /* console log to see whats available */
-   console.log(data);
-   /*add the temperature first */
-   temp.innerHTML = data.current.temp_c + "&#176;";
-   conditionOutput.innerHTML = data.current.condition.text;
-   /*get the date and time from the city */
-   const date = Date.location.localtime;
-   const y = parseInt(date.substr(0.4));
-   const m = parseInt(date.substr(5.2));
-   const d = parseInt(date.substr(8.2));
-   const time = date.substr(11);
+  fetch(
+    "http://api.weatherapi.com.com/v1/current.json?key=bcd29a26471b4b64a9690018221606=${cityInput}"
+  )
+    /* convert the data in json format to regular js object */
+    .then((response) => response.json())
+    .then((data) => {
+      /* console log to see whats available */
+      console.log(data);
+      /*add the temperature first */
+      temp.innerHTML = data.current.temp_c + "&#176;";
+      conditionOutput.innerHTML = data.current.condition.text;
+      /*get the date and time from the city */
+      const date = Date.location.localtime;
+      const y = parseInt(date.substr(0.4));
+      const m = parseInt(date.substr(5.2));
+      const d = parseInt(date.substr(8.2));
+      const time = date.substr(11);
 
+      //formating of the date into a different style
+      dateOutput.innerHTML = `${dayOfTheWeek(d, m, y)}${d},${t},${y}`;
+      timeOutput.innerHTML = time;
 
+      //add the name of the city into the page.
+      nameOutput.innerHTML = data.location.name;
 
-  })
+      //extract the weather icons
+      const iconId = data.current.condition.icon.substr(
+        "//cdn.weatherapi.com/weather/64*64/".lenght
+      );
+
+      // reformatting the icon to my local folder, so as to add to the page
+      icon.src = "./icons/" + iconId;
+
+      // adding the wether details to the page
+
+      cloudOutput.innerHTML = data.current.cloud + "%";
+      humidityOutput.innerHTML = data.current.humidity + "%";
+      windOutput.innerHTML = data.current.wind + "km/h";
+
+      //setting default time of the day
+
+      let timeOfTheDay = "day";
+
+      //to get a unique id for different weather condition;
+      const code = data.current.condition.code;
+
+      //change to night mode once the city is night time
+
+      if (!data.current.is_day) {
+        timeOfTheDay = "night";
+      }
+      if (code == 1000) {
+        //change the background img to clear
+        app.style.backgroundImage = `url(./images/${timeOfTheDay}/clear.jpg)`;
+        //changing the search btn depending on if night or day
+
+        btn.style.background = "#e5ba92";
+        if (timeOfTheDay == "night") {
+          btn.style.background = "#181e27";
+        }
+      }
+      //do thesame thing for cloudy weather
+      else if (
+        code == 1003 ||
+        code == 1006 ||
+        code == 1009 ||
+        code == 1030 ||
+        code == 1069 ||
+        code == 1087 ||
+        code == 1135 ||
+        code == 1273 ||
+        code == 1276 ||
+        code == 1279 ||
+        code == 1282
+      ) {
+        app.style.backgroundImage = `url(./images/${timeOfTheDay}/rainy.jpg)`;
+        btn.style.background = "#647d75";
+        if (timeOfTheDay == "night") {
+          btn.style.background = "#325c80";
+        }
+        //and for the snow
+      } else {
+        app.style.backgroundImage = `url("./images/${timeOfTheDay}/snowy.jpg)`;
+        btn.style.background = "#4d72aa";
+        if (timeOfTheDay == "night") {
+          btn.style.background = "#1b1b1b";
+        }
+      }
+      //fade in out stuff
+      app.style.opacity = "1";
+    })
+    //throw an alert if the state does not exist
+    .catch(() => {
+      alert("city not found in pure weather, please try again");
+      app.style.opacity = "1";
+    });
+}
+//call the function for page load
+fetchWeatherData();
+//to fade into the page
+app.style.opacity = "1";
